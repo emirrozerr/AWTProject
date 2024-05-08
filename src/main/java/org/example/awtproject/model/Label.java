@@ -1,17 +1,16 @@
-package org.example.awtproject;
+package org.example.awtproject.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
-@Table(name = "users")
+import java.util.Set;
+
 @Entity
-public class User {
+@Data
+public class Label {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String firstname;
-
-    private String lastname;
+    private String name;
 }
