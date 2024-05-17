@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import Shadow from "@/components/style-components/shadow/Shadow.vue";
+definePageMeta({
+  middleware: 'auth'
+})
 </script>
 
 <template>
@@ -8,4 +11,4 @@ import Shadow from "@/components/style-components/shadow/Shadow.vue";
             <Shadow/>
         </v-col>
     </v-row>
-</template> 
+</template>

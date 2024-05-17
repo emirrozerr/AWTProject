@@ -38,10 +38,9 @@
     }
 
     /*General Menu css*/
-    .v-list-group__items .v-list-item,
+    .v-list-group__items .v-list-item, .v-expansion-panel,
     .v-list-item {
         border-radius: $border-radius-root + 4;
-        padding-inline-start: calc(12px + var(--indent-padding) / 10) !important;
 
         margin: 0 0 2px;
 

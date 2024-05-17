@@ -1,8 +1,9 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon
+    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon,BuildingWarehouseIcon, LayoutBoardIcon
 } from 'vue-tabler-icons';
+import {TRUE} from "sass";
 
 export interface menu {
     header?: string;
@@ -17,6 +18,8 @@ export interface menu {
     disabled?: boolean;
     type?: string;
     subCaption?: string;
+    collapse?: boolean;
+    subItems?: any;
 }
 
 const sidebarItem: menu[] = [
@@ -24,7 +27,25 @@ const sidebarItem: menu[] = [
     {
         title: 'Dashboard',
         icon: LayoutDashboardIcon,
-        to: '/'
+        to: '/dashboard'
+    },
+    { header: 'Workspaces' },
+    {
+        title: 'Workspaces',
+        icon: BuildingWarehouseIcon,
+        collapse: true,
+        subItems: [
+            {
+                title: 'Personal',
+                icon: LayoutBoardIcon,
+                to: '/project'
+            },
+            {
+                title: 'Work',
+                icon: LayoutBoardIcon,
+                to: '/project'
+            },
+        ],
     },
     { header: 'utilities' },
     {
