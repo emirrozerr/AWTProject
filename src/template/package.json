@@ -8,8 +8,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@mdi/font": "^6.5.95",
-    "@nuxtjs/vuetify": "^1.12.3",
+    "@jridgewell/sourcemap-codec": "^1.4.15",
+    "@mdi/font": "^6.9.96",
     "@tiptap/starter-kit": "2.0.0-beta.192",
     "@tiptap/vue-3": "2.0.0-beta.97",
     "@vuelidate/core": "^2.0.3",
@@ -17,16 +17,20 @@
     "apexcharts": "3.36.3",
     "sass": "^1.49.9",
     "sass-loader": "^10.0.0",
-    "vue": "3.2.45",
+    "svgo": "^3.3.2",
+    "vue": "^3.4.27",
     "vue-router": "^4.1.6",
     "vue-style-loader": "^4.1.3",
     "vue-tabler-icons": "2.9.0",
     "vue3-apexcharts": "1.4.1",
-    "vue3-perfect-scrollbar": "1.6.0",
-    "vuetify": "3.0.1",
+    "vue3-perfect-scrollbar": "^2.0.0",
+    "vuedraggable": "^4.1.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "nuxt": "3.0.0"
+    "nuxi": "^3.11.1",
+    "nuxt": "^3.11.2",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vuetify": "^3.6.7"
   }
 }

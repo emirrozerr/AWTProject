@@ -4,6 +4,6 @@ import { RouterView } from "vue-router";
 </script>
 <template>
   <v-app>
-    <RouterView />
+    <NuxtPage />
   </v-app>
 </template>
