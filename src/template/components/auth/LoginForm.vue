@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { required, email as emailValidator } from '@vuelidate/validators'
+import { required, email ,minLength} from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 
 const router = useRouter()
@@ -11,8 +11,8 @@ const formState = reactive({
 })
 
 const validationRules = {
-  email: { required, emailValidator },
-  password: { required }
+  email: { required, email },
+  password: { required,minLength: minLength(5) }
 }
 
 const v$ = useVuelidate(validationRules, formState)
@@ -23,7 +23,6 @@ const visible = ref(false)
 const loginUser = async () => {
   v$.value.$touch()
   if (v$.value.$invalid) {
-    resMessage.value = 'Please fill in all fields correctly'
     return
   }
 
@@ -61,28 +60,38 @@ const loginUser = async () => {
     <v-col cols="12">
       <v-label class="font-weight-bold mb-1">{{ resMessage }}</v-label>
       <v-label class="font-weight-bold mb-1">Email</v-label>
-      <v-text-field
-          v-model="formState.email"
-          placeholder="Email address"
-          variant="outlined"
-          hide-details color="primary"
-          prepend-inner-icon="mdi-email-outline"
-          :error-messages="v$.email.$errors.map(error => error.$message)"
-      />
+      <div :class="{ error: v$.email.$errors.length }">
+        <v-text-field
+            v-model="formState.email"
+            placeholder="Email address"
+            variant="outlined"
+            hide-details color="primary"
+            prepend-inner-icon="mdi-email-outline"
+            :error-messages="v$.email.$errors.map(error => error.$message)"
+        />
+        <div class="input-errors" v-for="error of v$.email.$errors" :key="error.$uid">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </div>
     </v-col>
     <v-col cols="12">
       <v-label class="font-weight-bold mb-1">Password</v-label>
-      <v-text-field
-          v-model="formState.password"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="visible ? 'text' : 'password'"
-          placeholder="Enter your password"
-          prepend-inner-icon="mdi-lock-outline"
-          variant="outlined"
-          hide-details color="primary"
-          @click:append-inner="visible = !visible"
-          :error-messages="v$.password.$errors.map(error => error.$message)"
-      />
+      <div :class="{ error: v$.password.$errors.length }">
+        <v-text-field
+            v-model="formState.password"
+            :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="visible ? 'text' : 'password'"
+            placeholder="Enter your password"
+            prepend-inner-icon="mdi-lock-outline"
+            variant="outlined"
+            hide-details color="primary"
+            @click:append-inner="visible = !visible"
+            :error-messages="v$.password.$errors.map(error => error.$message)"
+        />
+        <div class="input-errors" v-for="error of v$.password.$errors" :key="error.$uid">
+          <div class="error-msg">{{ error.$message }}</div>
+        </div>
+      </div>
     </v-col>
     <v-col cols="12" class="pt-0">
       <div class="d-flex flex-wrap align-center ml-n2">
@@ -104,3 +113,11 @@ const loginUser = async () => {
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+.error-msg {
+  color: #856404;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+</style>

@@ -2,11 +2,8 @@ package org.example.awtproject.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.example.awtproject.model.Workspace;
 import org.example.awtproject.repo.UserRepository;
 import org.example.awtproject.model.User;
-import org.example.awtproject.repo.WorkspaceRepository;
-import org.example.awtproject.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

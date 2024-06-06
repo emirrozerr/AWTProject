@@ -11,7 +11,7 @@ const props = defineProps({ item: Object, level: Number });
               class="pa-0 ma-0"
               :to="item.to"
               rounded
-              active-color="primary"
+              color="primary"
               :disabled="item.disabled"
               :target="item.type === 'external' ? '_blank' : ''"
           >
@@ -29,7 +29,7 @@ const props = defineProps({ item: Object, level: Number });
                       :to="subItem.to"
                       rounded
                       class="ma-0 pa-0"
-                      active-color="primary"
+                      color="primary"
                       :disabled="subItem.disabled"
                       :target="subItem.type === 'external' ? '_blank' : ''"
                   >
@@ -58,7 +58,7 @@ const props = defineProps({ item: Object, level: Number });
         :to="item.to"
         rounded
         class="mb-1"
-        active-color="primary"
+        color="primary"
         :disabled="item.disabled"
         :target="item.type === 'external' ? '_blank' : ''"
     >

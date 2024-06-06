@@ -1,7 +1,8 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon,BuildingWarehouseIcon, LayoutBoardIcon
+    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon,BuildingWarehouseIcon,
+     LayoutBoardIcon, MedicineSyrupIcon
 } from 'vue-tabler-icons';
 import {TRUE} from "sass";
 
@@ -29,6 +30,11 @@ const sidebarItem: menu[] = [
         icon: LayoutDashboardIcon,
         to: '/dashboard'
     },
+    {
+        title: 'Medication Tracker',
+        icon: MedicineSyrupIcon,
+        to: '/medicationTracker'
+    },
     { header: 'Workspaces' },
     {
         title: 'Workspaces',
@@ -47,17 +53,6 @@ const sidebarItem: menu[] = [
             },
         ],
     },
-    { header: 'utilities' },
-    {
-        title: 'Typography',
-        icon: TypographyIcon,
-        to: '/ui/typography'
-    },
-    {
-        title: 'Shadow',
-        icon: CopyIcon,
-        to: '/ui/shadow'
-    },
     { header: 'auth' },
     {
         title: 'Login',
@@ -68,17 +63,6 @@ const sidebarItem: menu[] = [
         title: 'Register',
         icon: UserPlusIcon,
         to: '/auth/register'
-    },
-    { header: 'Extra' },
-    {
-        title: 'Icons',
-        icon: MoodHappyIcon,
-        to: '/icons'
-    },
-    {
-        title: 'Sample Page',
-        icon: ApertureIcon,
-        to: '/sample-page'
     },
 ];
 
