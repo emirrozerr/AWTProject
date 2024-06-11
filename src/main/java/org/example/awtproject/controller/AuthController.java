@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/auth")
@@ -37,7 +39,9 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(token));
+        Optional<User> user = userRepository.findByEmail(authRequestDTO.getEmail());
+        UUID user_id = user.map(User::getId).orElse(null);
+        return ResponseEntity.status(HttpStatus.OK).body(new AuthResponseDTO(token,user_id));
     }
 
     @PostMapping("/register")

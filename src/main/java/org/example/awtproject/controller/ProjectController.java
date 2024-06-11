@@ -25,15 +25,15 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @GetMapping("/workspace{workspaceId}")
+    @GetMapping("/workspace/{workspaceId}")
     public ResponseEntity<List<Project>> getAllProjects(@PathVariable Integer workspaceId){
         List<Project> projects = projectRepository.findAllByWorkspaceId(workspaceId);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
 
-    @PostMapping("/workspace/{workspaceId}")
-    public ResponseEntity<Project> saveProject(@PathVariable Integer workspaceId, @RequestBody ProjectDTO projectDTO){
-        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow();
+    @PostMapping()
+    public ResponseEntity<Project> saveProject(@RequestBody ProjectDTO projectDTO){
+        Workspace workspace = workspaceRepository.findById(projectDTO.getWorkspaceId()).orElseThrow();
         Project project = projectService.saveProject(projectDTO,workspace);
         return ResponseEntity.status(HttpStatus.CREATED).body(project);
     }

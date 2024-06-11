@@ -32,9 +32,9 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
-    @PostMapping("/project/{projectId}")
-    public ResponseEntity<Task> saveTask(@PathVariable Integer projectId, @RequestBody TaskDTO taskDTO){
-        Project project = projectRepository.findById(projectId).orElseThrow();
+    @PostMapping()
+    public ResponseEntity<Task> saveTask(@RequestBody TaskDTO taskDTO){
+        Project project = projectRepository.findById(taskDTO.getProjectId()).orElseThrow();
         Task task = taskService.saveProject(taskDTO,project);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }

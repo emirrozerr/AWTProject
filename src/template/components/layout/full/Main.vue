@@ -2,8 +2,21 @@
 import { ref, shallowRef } from 'vue';
 import sidebarItems from '@/components/layout/full/vertical-sidebar/sidebarItem';
 import { Menu2Icon } from 'vue-tabler-icons';
+import { getSidebarItems, type Menu } from '@/components/layout/full/vertical-sidebar/sidebarItem';
+
+
 const sidebarMenu = shallowRef(sidebarItems);
 const sDrawer = ref(true);
+const menuItems = shallowRef<Menu[]>([]);
+
+onMounted(async () => {
+  try {
+    menuItems.value = await getSidebarItems();
+  } catch (error) {
+    console.error('Failed to load sidebar items', error);
+  }
+});
+
 </script>
 
 <template>
@@ -20,7 +33,7 @@ const sDrawer = ref(true);
         <perfect-scrollbar class="scrollnavbar">
             <v-list class="pa-6">
                 <!---Menu Loop -->
-                <template v-for="(item, i) in sidebarMenu">
+                <template v-for="(item, i) in menuItems" :key="item.title || item.header">
                     <!---Item Sub Header -->
                     <LayoutFullVerticalSidebarNavGroup :item="item" v-if="item.header" :key="item.title" />
 

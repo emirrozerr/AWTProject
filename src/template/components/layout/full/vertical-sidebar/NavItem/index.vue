@@ -17,14 +17,13 @@ const props = defineProps({ item: Object, level: Number });
           >
             <v-expansion-panel-title>
               <Icon class="mr-3" :item="item.icon" :level="level" />
-
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-expansion-panel-title>
 
             <!--Subitems-->
             <v-expansion-panel-text>
               <v-list class="ma-0 pa-0">
-                <template v-for="(subItem, i) in item.subItems">
+                <template v-for="(subItem, i) in item.subItems" :key="subItem.title">
                   <v-list-item
                       :to="subItem.to"
                       rounded

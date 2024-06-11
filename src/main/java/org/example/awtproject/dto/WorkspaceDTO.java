@@ -1,10 +1,11 @@
 package org.example.awtproject.dto;
 
 import lombok.Data;
-import org.example.awtproject.model.User;
+
+import java.util.UUID;
 @Data
 public class WorkspaceDTO {
+    private UUID userId;
     private String name;
     private String description;
-    private User user;
 }

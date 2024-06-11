@@ -10,7 +10,8 @@ public class AuthResponseDTO {
     private UUID userId;
     private String tokenType = "Bearer";
 
-    public AuthResponseDTO(String accessToken) {
+    public AuthResponseDTO(String accessToken, UUID userId) {
         this.accessToken = accessToken;
+        this.userId = userId;
     }
 }

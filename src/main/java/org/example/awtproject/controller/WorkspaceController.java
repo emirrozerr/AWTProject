@@ -32,9 +32,9 @@ public class WorkspaceController {
         return ResponseEntity.status(HttpStatus.OK).body(workspaces);
     }
 
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<Workspace> saveWorkspace(@PathVariable UUID userId, @RequestBody WorkspaceDTO workspaceDTO){
-        User user = userRepository.findById(userId).orElseThrow();
+    @PostMapping()
+    public ResponseEntity<Workspace> saveWorkspace(@RequestBody WorkspaceDTO workspaceDTO){
+        User user = userRepository.findById(workspaceDTO.getUserId()).orElseThrow();
         Workspace workspace = workspaceService.saveWorkspace(workspaceDTO,user);
         return ResponseEntity.status(HttpStatus.CREATED).body(workspace);
     }

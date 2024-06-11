@@ -46,6 +46,7 @@ const loginUser = async () => {
     const data = await response.json()
     console.log(data)
     localStorage.setItem('token', data.accessToken)
+    localStorage.setItem('userId',data.userId)
     await router.push('/dashboard')
 
     // Handle successful login, e.g., redirect user
