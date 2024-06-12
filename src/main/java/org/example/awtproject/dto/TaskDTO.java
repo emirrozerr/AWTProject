@@ -3,6 +3,7 @@ package org.example.awtproject.dto;
 import lombok.Data;
 @Data
 public class TaskDTO {
+    private Integer id;
     private Integer projectId;
     private String title;
     private String description;

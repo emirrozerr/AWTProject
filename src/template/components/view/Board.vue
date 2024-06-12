@@ -17,9 +17,10 @@
 <script setup lang="ts">
 import BoardColumn from '~/components/view/BoardColumn.vue';
 
-const { tasks, todoTasks, doingTasks, doneTasks, updateTaskStatus } = useTasks();
+const { updateTaskStatus, todoTasks, doingTasks ,doneTasks } = useTasks();
 
 const updateStatus = (taskId: number, newStatus: 'todo' | 'doing' | 'done') => {
   updateTaskStatus(taskId, newStatus);
 };
+
 </script>

@@ -6,8 +6,17 @@ import TodoView from "~/components/view/TodoView.vue";
 definePageMeta({
   middleware: 'auth'
 });
-
 const activeTab = ref(0);
+const route = useRoute();
+const projectId = Array.isArray(route.params.projectId) ? route.params.projectId[0] : route.params.projectId; // Get the project ID from the route
+
+
+const { fetchTasks } = useTasks();
+
+onMounted(() => {
+  fetchTasks(Number(projectId));
+});
+
 </script>
 
 <template>

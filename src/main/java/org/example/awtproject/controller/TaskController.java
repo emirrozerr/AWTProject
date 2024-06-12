@@ -32,24 +32,23 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Task> saveTask(@RequestBody TaskDTO taskDTO){
         Project project = projectRepository.findById(taskDTO.getProjectId()).orElseThrow();
-        Task task = taskService.saveProject(taskDTO,project);
+        Task task = taskService.saveTask(taskDTO,project);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
-    @PutMapping("/{taskId}")
-    public ResponseEntity<Task> updateTask(@PathVariable Integer taskId, @RequestBody TaskDTO taskDTO){
-        Task task = taskRepository.findById(taskId).orElseThrow();
-        task = taskService.updateTask(taskDTO,task);
+    @PutMapping
+    public ResponseEntity<Task> updateTask(@RequestBody TaskDTO taskDTO){
+        Task task = taskService.updateTask(taskDTO);
         return ResponseEntity.status(HttpStatus.OK).body(task);
     }
 
     @DeleteMapping("/{taskId}")
-    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId){
+    public ResponseEntity<String> deleteTask(@PathVariable Integer taskId){
         Task task = taskRepository.findById(taskId).orElseThrow();
         taskRepository.delete(task);
-        return ResponseEntity.status(HttpStatus.OK).body(task);
+        return ResponseEntity.status(HttpStatus.OK).body("Task deleted successfully");
     }
 }

@@ -1,18 +1,44 @@
 import { reactive, computed } from 'vue';
+import { taskService} from '@/services/taskService';
+import type { Task,TaskDTO } from '@/types/Task';
 
-interface Task {
-  id: number;
-  name: string;
-  description?: string;
-  dueDate?: string;
-  status: 'todo' | 'doing' | 'done';
+const tasks = reactive<Task[]>([]);
+
+const fetchTasks = async (projectId: number) => {
+  try {
+    const response = await taskService.getTasks(projectId);
+    tasks.splice(0, tasks.length, ...response); // Reset and populate tasks array
+  } catch (error) {
+    console.error('Failed to fetch tasks', error);
+  }
+};
+
+const addTask = async (task: TaskDTO) => {
+  try {
+    const response = await taskService.saveTask(task);
+    tasks.push(response);
+  } catch (error) {
+    console.error('Failed to add task', error);
+  }
+};
+
+const updateTask = async (task: TaskDTO) => {
+  try {
+    const response = await taskService.updateTask(task);
+    replaceTask(task.id, response);
+  } catch (error) {
+    console.error('Failed to update task', error);
+  }
 }
 
-const tasks = reactive<Task[]>([
-  { id: 1, name: 'Task 1', description: 'Description 1', dueDate: '2024-06-10', status: 'todo' },
-  { id: 2, name: 'Task 2', description: 'Description 2', dueDate: '2024-06-10', status: 'doing' },
-  { id: 3, name: 'Task 3', description: 'Description 3', status: 'done' }
-]);
+const deleteTask = async (taskId: number) => {
+  try {
+    const response = await taskService.deleteTask(taskId);
+    removeTask(taskId);
+  } catch (error) {
+    console.error('Failed to delete task', error);
+  }
+}
 
 const todoTasks = computed(() => tasks.filter(task => task.status === 'todo'));
 const doingTasks = computed(() => tasks.filter(task => task.status === 'doing'));
@@ -22,19 +48,29 @@ const updateTaskStatus = (taskId: number, newStatus: 'todo' | 'doing' | 'done') 
   const task = tasks.find(t => t.id === taskId);
   if (task) {
     task.status = newStatus;
+    const updatedTaskDTO: TaskDTO = {
+      id: taskId,
+      status: newStatus,
+    };
+    updateTask(updatedTaskDTO).then(r => console.log(`ID: ${taskId}`,' Task status updated in DB'));
   }
 };
 
-const addTaskToList = (name: string, status: 'todo' | 'doing' | 'done', description?:string) => {
-  const newTask = {
-    id: tasks.length + 1,
-    name,
-    description,
-    dueDate: new Date().toISOString().split('T')[0],
-    status
-  };
-  tasks.push(newTask);
+const removeTask = (id: number) => {
+  const index = tasks.findIndex(task => task.id === id);
+  if (index !== -1) {
+    tasks.splice(index, 1);
+  }
 };
+
+function replaceTask(taskId: number | undefined, newTask: Task) {
+  const index = tasks.findIndex(task => task.id === taskId);
+  if (index !== -1) {
+    tasks[index] = newTask;
+  } else {
+    console.warn(`Task with ID ${taskId} not found.`);
+  }
+}
 
 export function useTasks() {
   return {
@@ -43,6 +79,9 @@ export function useTasks() {
     doingTasks,
     doneTasks,
     updateTaskStatus,
-    addTaskToList
+    addTask,
+    fetchTasks,
+    deleteTask,
+    updateTask
   };
 }

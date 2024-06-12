@@ -1,74 +1,61 @@
 <template>
   <div>
-    <v-card @click="openModal" class="ma-3">
-      <v-card-title>{{ task.name }}</v-card-title>
+    <v-card @click="openModal" class="ma-3 task-card">
+      <v-card-title>{{ task.title }}</v-card-title>
     </v-card>
 
     <v-dialog v-model="isModalOpen" max-width="600px">
       <v-card>
         <v-card-title class="d-flex justify-space-between">
-          <span>{{ task.name }}</span>
+          {{ "Task" }}
           <v-btn icon @click="closeModal">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
 
         <v-card-text>
+          <v-text-field label="Title" v-model="task.title"></v-text-field>
           <v-text-field label="Description" v-model="task.description" multiline></v-text-field>
-          <v-row>
-            <v-col>
-              <v-menu
-                v-model="datePickerMenu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="task.dueDate"
-                    label="Due date"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="task.dueDate" @input="datePickerMenu = false"></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
+          <v-date-input
+              v-model="dueDateHolder"
+              label="Due Date"
+              prepend-icon=""
+              persistent-placeholder
+          ></v-date-input>
+
           <v-select
             label="Status"
             :items="['todo', 'doing', 'done']"
-            v-model="task.status"
+            v-model="taskStatusHolder"
           ></v-select>
         </v-card-text>
 
         <v-card-actions>
-          <v-btn color="primary" @click="saveTask">Save</v-btn>
-          <v-btn text @click="closeModal">Cancel</v-btn>
+          <v-btn color="primary" @click="updateTaskEvent">Save</v-btn>
+          <v-btn @click="closeModal">Cancel</v-btn>
+          <v-btn color="red" @click="deleteTaskEvent">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
 </template>
 
-<script setup>
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
+import type { Task,TaskDTO } from '@/types/Task';
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
-const props = defineProps({
-  task: {
-    type: Object,
-    required: true
-  }
-});
+interface Props {
+  task: Task;
+}
 
-const emit = defineEmits(['update-status']);
+const props = defineProps<Props>();
+
+const { deleteTask,updateTask } = useTasks();
 
 const isModalOpen = ref(false);
-const datePickerMenu = ref(false);
+const dueDateHolder = ref(props.task.dueDate)
+const taskStatusHolder = ref(props.task.status);
 
 const openModal = () => {
   isModalOpen.value = true;
@@ -78,12 +65,38 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const saveTask = () => {
-  emit('update-status', props.task.id, props.task.status);
+const updateTaskEvent = () => {
+  //TODO some validations and error handling
+
+  const updatedTask: TaskDTO = {
+    id: props.task.id,
+    title: props.task.title,
+    description: props.task.description,
+    dueDate: dueDateHolder.value,
+    priority: props.task.priority,
+    status: taskStatusHolder.value as 'todo' | 'doing' | 'done',
+  };
+  updateTask(updatedTask);
   closeModal();
 };
+
+const deleteTaskEvent = () => {
+  //TODO show confirmation dialog
+  deleteTask(props.task.id)
+};
+
 </script>
 
 <style scoped>
-/* Add any specific styles for the Task component here */
+.task-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+}
+.task-card{
+  max-width: 100%;
+  display: block;
+}
 </style>

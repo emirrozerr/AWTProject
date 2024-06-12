@@ -8,16 +8,16 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <draggable 
-        :list="tasks" 
-        item-key="id" 
-        :animation="200" 
-        ghost-class="ghost-card" 
-        group="tasks" 
+      <draggable
+        :list="tasks"
+        item-key="id"
+        :animation="250"
+        ghost-class="ghost-card"
+        group="tasks"
         @change="onChange"
       >
         <template #item="{ element }">
-          <Task :task="element" @update-status="updateTaskStatus" />
+          <Task :task="element" />
         </template>
       </draggable>
     </v-card-text>
@@ -27,9 +27,15 @@
         <v-card-text>
           <v-text-field v-model="newTaskTitle" label="Task Title"></v-text-field>
           <v-text-field v-model="newTaskDescription" label="Task Description"></v-text-field>
+          <v-date-input
+              v-model="newTaskDueDate"
+              label="Due Date"
+              prepend-icon=""
+              persistent-placeholder
+          ></v-date-input>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="addTask">Add</v-btn>
+          <v-btn color="primary" @click="addTaskEvent">Add</v-btn>
           <v-btn @click="showAddTask = false">Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -37,51 +43,69 @@
   </v-card>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import draggable from 'vuedraggable';
 import Task from '~/components/view/Task.vue';
-import {PlusIcon} from 'vue-tabler-icons'
+import { PlusIcon } from 'vue-tabler-icons';
+import { type Task as TaskType, type TaskDTO } from '@/types/Task';
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
-const props = defineProps({
-  title: String,
-  tasks: {
-    type: Array,
-    default: () => []
-  },
-  status: {
-    type: String,
-    required: true
-  }
-});
+const route = useRoute();
+const projectId = Array.isArray(route.params.projectId) ? route.params.projectId[0] : route.params.projectId; // Get the project ID from the route
 
-const { addTaskToList } = useTasks();
+interface Props {
+  title: string;
+  tasks: TaskType[];
+  status: string;
+}
 
-const emit = defineEmits(['update-status']);
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "update-status", taskId: number, newStatus: "todo" | "doing" | "done"): void;
+}>();
+
 const showAddTask = ref(false);
 const newTaskTitle = ref('');
 const newTaskDescription = ref('');
+const newTaskDueDate = ref();
 
-const onChange = (event) => {
+const { addTask } = useTasks();
+
+const onChange = (event: { added?: { element: TaskType } }) => {
   const { added } = event;
   if (added && added.element) {
-    emit('update-status', added.element.id, props.status);
+    emit('update-status', added.element.id, props.status as 'todo' | 'doing' | 'done');
+    console.log(added)
   }
 };
 
-const updateTaskStatus = (taskId, newStatus) => {
-  emit('update-status', taskId, newStatus);
-};
+const addTaskEvent = () => {
+  if(newTaskDueDate)
+      console.log(newTaskDueDate);
 
-const addTask = () => {
   if (newTaskTitle.value.trim()) {
-    addTaskToList(newTaskTitle.value, props.status,newTaskDescription.value,);
+
+    const newTask: TaskDTO = {
+      title: newTaskTitle.value,
+      description: newTaskDescription.value,
+      dueDate: newTaskDueDate.value,
+      priority: 'High',
+      status: props.status as 'todo' | 'doing' | 'done',
+      projectId: Number(projectId)
+    };
+
+    addTask(newTask);
     newTaskTitle.value = '';
     newTaskDescription.value = '';
+    newTaskDueDate.value = '';
     showAddTask.value = false;
+    // emit('update-status', null as any, null as any); // Trigger parent to fetch tasks again
   }
 };
 </script>
+
 
 <style scoped>
 .ghost-card {
