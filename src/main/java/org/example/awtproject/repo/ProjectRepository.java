@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project,Integer> {
     List<Project> findAllByWorkspaceId(Integer workspaceId);
+    void deleteByWorkspaceId(Integer workspaceId);
 }

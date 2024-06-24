@@ -34,7 +34,8 @@ public class WorkspaceController {
 
     @PostMapping()
     public ResponseEntity<Workspace> saveWorkspace(@RequestBody WorkspaceDTO workspaceDTO){
-        User user = userRepository.findById(workspaceDTO.getUserId()).orElseThrow();
+        UUID userId = UUID.fromString(workspaceDTO.getUserId());
+        User user = userRepository.findById(userId).orElseThrow();
         Workspace workspace = workspaceService.saveWorkspace(workspaceDTO,user);
         return ResponseEntity.status(HttpStatus.CREATED).body(workspace);
     }
@@ -42,14 +43,13 @@ public class WorkspaceController {
     @PutMapping("/{workspaceId}")
     public ResponseEntity<Workspace> updateWorkspace(@PathVariable Integer workspaceId, @RequestBody WorkspaceDTO workspaceDTO){
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow();
-        workspace = workspaceService.updateWorkspace(workspaceDTO,workspace);
-        return ResponseEntity.status(HttpStatus.CREATED).body(workspace);
+        Workspace updatedWorkspace = workspaceService.updateWorkspace(workspaceDTO,workspace);
+        return ResponseEntity.ok(updatedWorkspace);
     }
 
     @DeleteMapping("/{workspaceId}")
-    public ResponseEntity<Workspace> deleteWorkspace(@PathVariable Integer workspaceId){
-        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow();
-        workspaceRepository.delete(workspace);
-        return ResponseEntity.status(HttpStatus.OK).body(workspace);
+    public ResponseEntity<String> deleteWorkspace(@PathVariable Integer workspaceId){
+        workspaceService.deleteWorkspace(workspaceId);
+        return ResponseEntity.ok("Successfully deleted workspace");
     }
 }

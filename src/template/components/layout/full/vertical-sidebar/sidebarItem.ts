@@ -1,12 +1,7 @@
-import {
-    ApertureIcon,
-    CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon,BuildingWarehouseIcon,
-     LayoutBoardIcon, MedicineSyrupIcon
-} from 'vue-tabler-icons';
-import {TRUE} from "sass";
-import { workspaceService, type Workspace } from '@/services/workspaceService';
-import { projectService, type Project } from '@/services/projectService';
+import {BuildingWarehouseIcon, LayoutBoardIcon, LayoutDashboardIcon, MedicineSyrupIcon} from 'vue-tabler-icons';
+import {workspaceService} from '@/services/workspaceService';
+import type { Workspace } from '@/types/Workspace';
+import {type Project, projectService} from '@/services/projectService';
 
 export interface Menu {
     header?: string;
@@ -23,6 +18,7 @@ export interface Menu {
     subCaption?: string;
     collapse?: boolean;
     subItems?: any;
+    editButton?:boolean;
 }
 
 const staticMenu: Menu[] = [
@@ -44,7 +40,7 @@ export async function getSidebarItems(): Promise<Menu[]> {
     if (!userId) {
       throw new Error('User ID is not available');
     }
-  
+
     try {
       const workspaces = await workspaceService.getUserWorkspaces(userId);
       const workspaceMenuItems: Menu[] = await Promise.all(workspaces.map(async (workspace: Workspace) => {
@@ -60,9 +56,9 @@ export async function getSidebarItems(): Promise<Menu[]> {
           }))
         };
       }));
-  
-  
-    const workspaceMenuHeader: Menu = { header: 'Workspaces' };
+
+
+    const workspaceMenuHeader: Menu = { header: 'Workspaces' , editButton: true};
     const workspaceMenu = [workspaceMenuHeader, ...workspaceMenuItems];
 
     return [...staticMenu, ...workspaceMenu];
@@ -70,66 +66,21 @@ export async function getSidebarItems(): Promise<Menu[]> {
         console.error('Failed to fetch workspaces', error);
         return staticMenu; // Return static menu if fetching fails
     }
-  }
+}
 
-const sidebarItem: Menu[] = [
-    { header: 'Home' },
-    {
-        title: 'Dashboard',
-        icon: LayoutDashboardIcon,
-        to: '/dashboard'
-    },
-    {
-        title: 'Medication Tracker',
-        icon: MedicineSyrupIcon,
-        to: '/medicationTracker'
-    },
-    { header: 'Workspaces' },
-    {
-        title: 'Personal Workspace',
-        icon: BuildingWarehouseIcon,
-        collapse: true,
-        subItems: [
-            {
-                title: 'GYM Project',
-                icon: LayoutBoardIcon,
-                to: '/project'
-            },
-            {
-                title: 'House Renovation Project',
-                icon: LayoutBoardIcon,
-                to: '/project'
-            },
-        ],
-    },
-    {
-        title: 'School Workspace',
-        icon: BuildingWarehouseIcon,
-        collapse: true,
-        subItems: [
-            {
-                title: 'AWT Class',
-                icon: LayoutBoardIcon,
-                to: '/project'
-            },
-            {
-                title: 'Math Class',
-                icon: LayoutBoardIcon,
-                to: '/project'
-            },
-        ],
-    },
-    { header: 'auth' },
-    {
-        title: 'Login',
-        icon: LoginIcon,
-        to: '/auth/login'
-    },
-    {
-        title: 'Register',
-        icon: UserPlusIcon,
-        to: '/auth/register'
-    },
-];
+export async function deleteWorkspaceAndRefreshSidebar(workspaceId: number): Promise<Menu[]> {
+    try {
+        // Delete the workspace
+        await workspaceService.deleteWorkspaceById(workspaceId);
 
-export default sidebarItem;
+        // Refresh the sidebar items
+        return await getSidebarItems();
+    } catch (error) {
+        console.error('Failed to delete workspace and refresh sidebar', error);
+        throw error; // Rethrow error to handle it in the calling code
+    }
+}
+
+
+
+
