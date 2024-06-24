@@ -33,6 +33,7 @@
               prepend-icon=""
               persistent-placeholder
           ></v-date-input>
+
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="addTaskEvent">Add</v-btn>
@@ -69,7 +70,7 @@ const emit = defineEmits<{
 const showAddTask = ref(false);
 const newTaskTitle = ref('');
 const newTaskDescription = ref('');
-const newTaskDueDate = ref();
+const newTaskDueDate = ref<string | undefined>(undefined);
 
 const { addTask } = useTasks();
 

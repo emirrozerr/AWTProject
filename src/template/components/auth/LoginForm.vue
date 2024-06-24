@@ -63,6 +63,8 @@ const loginUser = async () => {
       <v-label class="font-weight-bold mb-1">Email</v-label>
       <div :class="{ error: v$.email.$errors.length }">
         <v-text-field
+            type="email"
+            autocomplete="username"
             v-model="formState.email"
             placeholder="Email address"
             variant="outlined"
@@ -82,6 +84,7 @@ const loginUser = async () => {
             v-model="formState.password"
             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
             :type="visible ? 'text' : 'password'"
+            autocomplete="current-password"
             placeholder="Enter your password"
             prepend-inner-icon="mdi-lock-outline"
             variant="outlined"

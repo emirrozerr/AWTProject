@@ -44,17 +44,46 @@
 import { ref } from 'vue';
 import type { Task,TaskDTO } from '@/types/Task';
 import { VDateInput } from 'vuetify/labs/VDateInput'
+import {useDate} from "vuetify";
 
 interface Props {
   task: Task;
 }
 
+const parseDate = (date: string | Date | undefined): string => {
+  if (date instanceof Date) {
+    return date.toISOString().split('T')[0];
+  } else if (typeof date === 'string' && date) {
+    const parsedDate = new Date(date);
+    return parsedDate.toISOString().split('T')[0];
+  }
+  return '';
+};
+
+
 const props = defineProps<Props>();
+
+const adapter = useDate()
+
+// Ensure the date is formatted correctly for the input field (YYYY-MM-DD)
+const formatDateToISO = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+// Initialize dueDateHolder with correctly formatted date
+const dueDateHolder = ref(props.task.dueDate ? formatDateToISO(props.task.dueDate) : '');
+
+// Log dates for debugging
+console.log("From db: ", props.task.dueDate);
+console.log("Formatted: ", dueDateHolder.value);
+
 
 const { deleteTask,updateTask } = useTasks();
 
 const isModalOpen = ref(false);
-const dueDateHolder = ref(props.task.dueDate)
+
 const taskStatusHolder = ref(props.task.status);
 
 const openModal = () => {

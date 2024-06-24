@@ -19,19 +19,17 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     public Task saveTask(TaskDTO taskDTO, Project project){
-
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(taskDTO.getDueDate(), formatter);
-        LocalDate taskDueDate = null;
-
-        if(!taskDTO.getDueDate().isEmpty())
-            taskDueDate = offsetDateTime.toLocalDate();
-
         Task task = new Task();
+
+        if(taskDTO.getDueDate() != null && !taskDTO.getDueDate().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(taskDTO.getDueDate(), formatter);
+            LocalDate taskDueDate = offsetDateTime.toLocalDate();
+            task.setDueDate(taskDueDate);
+        }
 
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
-        task.setDueDate(taskDueDate);
         task.setPriority(taskDTO.getPriority());
         task.setStatus(taskDTO.getStatus());
         task.setProject(project);
@@ -42,14 +40,13 @@ public class TaskService {
     public Task updateTask(TaskDTO taskDTO){
         Task task = taskRepository.findById(taskDTO.getId()).orElseThrow();
 
-        if(!taskDTO.getDueDate().isEmpty()) {
+        if(taskDTO.getDueDate() != null && !taskDTO.getDueDate().isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(taskDTO.getDueDate(), formatter);
-            LocalDate taskDueDate = null;
-            taskDueDate = offsetDateTime.toLocalDate();
+            LocalDate taskDueDate = offsetDateTime.toLocalDate();
             task.setDueDate(taskDueDate);
         }
-         //TODO validations and error handling
+
         if(taskDTO.getTitle() != null){
             task.setTitle(taskDTO.getTitle());
         }
