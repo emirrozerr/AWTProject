@@ -13,7 +13,13 @@ const getAuthHeaders = () => {
 
 
 export const taskService = {
-    async getTasks(projectId: number): Promise<Task[]> {
+    async getAllTasks(): Promise<Task[]> {
+        const response = await axios.get<Task[]>(`${API_URL}`, {
+            headers: getAuthHeaders(),
+        });
+        return response.data;
+    },
+    async getTasksByProjectId(projectId: number): Promise<Task[]> {
       const response = await axios.get<Task[]>(`${API_URL}/project/${projectId}`, {
         headers: getAuthHeaders(),
       });

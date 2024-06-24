@@ -6,7 +6,7 @@ const tasks = reactive<Task[]>([]);
 
 const fetchTasks = async (projectId: number) => {
   try {
-    const response = await taskService.getTasks(projectId);
+    const response = await taskService.getTasksByProjectId(projectId);
     tasks.splice(0, tasks.length, ...response); // Reset and populate tasks array
   } catch (error) {
     console.error('Failed to fetch tasks', error);
@@ -33,7 +33,7 @@ const updateTask = async (task: TaskDTO) => {
 
 const deleteTask = async (taskId: number) => {
   try {
-    const response = await taskService.deleteTask(taskId);
+    await taskService.deleteTask(taskId);
     removeTask(taskId);
   } catch (error) {
     console.error('Failed to delete task', error);
@@ -52,7 +52,7 @@ const updateTaskStatus = (taskId: number, newStatus: 'todo' | 'doing' | 'done') 
       id: taskId,
       status: newStatus,
     };
-    updateTask(updatedTaskDTO).then(r => console.log(`ID: ${taskId}`,' Task status updated in DB'));
+    updateTask(updatedTaskDTO).then(() => console.log(`ID: ${taskId}`,' Task status updated in DB'));
   }
 };
 

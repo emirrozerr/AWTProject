@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useTheme } from 'vuetify';
+import {computed} from 'vue';
+import {useTheme} from 'vuetify';
+import {taskService} from "~/services/taskService";
+import type {Task} from "~/types/Task";
+
 const theme = useTheme();
 const primary = theme.current.value.colors.primary;
 const lightprimary = theme.current.value.colors.lightprimary;
+const secondary = theme.current.value.colors.secondary;
 const chartOptions = computed(() => {
     return {
-        labels: ['series-1', 'series-2', 'series-3'],
+        labels: ['todo', 'doing', 'done'],
         chart: {
             type: 'donut',
             fontFamily: `inherit`,
@@ -15,7 +19,7 @@ const chartOptions = computed(() => {
                 show: false
             }
         },
-        colors: [primary, lightprimary, '#F9F9FD'],
+        colors: [primary, secondary, lightprimary],
         plotOptions: {
             pie: {
                 startAngle: 0,
@@ -29,7 +33,7 @@ const chartOptions = computed(() => {
         stroke: {
             show: false
         },
-        
+
         dataLabels: {
             enabled: false
         },
@@ -39,7 +43,30 @@ const chartOptions = computed(() => {
         tooltip: { theme: "light", fillSeriesColor: false },
     };
 });
-const Chart = [38, 40, 25];
+const allTasks = ref<Task[]>([]);
+const allTodoTask = ref<Task[]>([]);
+const allDoingTask = ref<Task[]>([]);
+const allDoneTask = ref<Task[]>([]);
+
+const Chart = ref([50, 40, 25]);
+// Use ref for reactive data
+const fetchAllTasks = async () => {
+  try {
+    allTasks.value = await taskService.getAllTasks();
+    allTodoTask.value = allTasks.value.filter(task => task.status === 'todo')
+    allDoingTask.value = allTasks.value.filter(task => task.status === 'doing')
+    allDoneTask.value = allTasks.value.filter(task => task.status === 'done')
+    Chart.value = [allTodoTask.value.length,allDoingTask.value.length,allDoneTask.value.length]
+    console.log('Fetched Tasks:', allTasks.value);
+  } catch (error) {
+    console.error('Failed to fetch tasks', error);
+  }
+};
+
+onMounted(() => {
+  fetchAllTasks(); // Fetch tasks when the component mounts
+});
+
 </script>
 <template>
     <v-card elevation="10" class="withbg">

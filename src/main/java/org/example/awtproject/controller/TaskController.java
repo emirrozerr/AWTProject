@@ -26,8 +26,14 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks(){
+        List<Task> tasks = taskRepository.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<List<Task>> getAllTasks(@PathVariable Integer projectId){
+    public ResponseEntity<List<Task>> getAllTasksByProjectId(@PathVariable Integer projectId){
         List<Task> tasks = taskRepository.findAllByProjectId(projectId);
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
